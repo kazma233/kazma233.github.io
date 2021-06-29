@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>笔记,PostgreSQL on Kazma&#39;s Blog</title>
+    <link>https://kazma233.github.io/tags/%E7%AC%94%E8%AE%B0postgresql/</link>
+    <description>Recent content in 笔记,PostgreSQL on Kazma&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-hans</language>
+    <lastBuildDate>Fri, 15 Feb 2019 00:00:00 +0800</lastBuildDate><atom:link href="https://kazma233.github.io/tags/%E7%AC%94%E8%AE%B0postgresql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PostgreSQL简介与安装</title>
+      <link>https://kazma233.github.io/posts/2019-02/postgresql%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Fri, 15 Feb 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://kazma233.github.io/posts/2019-02/postgresql%E5%85%A5%E9%97%A8/</guid>
+      <description>&lt;p&gt;PostgreSQL简介与安装&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

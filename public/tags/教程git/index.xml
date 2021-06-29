@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>教程,git on Kazma&#39;s Blog</title>
+    <link>https://kazma233.github.io/tags/%E6%95%99%E7%A8%8Bgit/</link>
+    <description>Recent content in 教程,git on Kazma&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-hans</language>
+    <lastBuildDate>Mon, 18 Jan 2021 00:19:27 +0800</lastBuildDate><atom:link href="https://kazma233.github.io/tags/%E6%95%99%E7%A8%8Bgit/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>git的submodule操作</title>
+      <link>https://kazma233.github.io/posts/2021-01/git%E7%9A%84submodule%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Mon, 18 Jan 2021 00:19:27 +0800</pubDate>
+      
+      <guid>https://kazma233.github.io/posts/2021-01/git%E7%9A%84submodule%E6%93%8D%E4%BD%9C/</guid>
+      <description>&lt;p&gt;被git的submodule给弄晕了，在这里做一个记录，如何正确的操作git的submodule&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

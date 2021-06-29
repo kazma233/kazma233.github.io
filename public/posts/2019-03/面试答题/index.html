@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+
+<head>
+    
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="HandheldFriendly" content="True" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="generator" content="Hugo 0.84.2" />
+
+
+<link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/dsrkafuu/dsr-cdn-main@1/images/favicons/dsrca.ico" />
+
+
+
+<title>面试答题 - Kazma&#39;s Blog</title>
+
+
+<meta name="author" content="Kazma" />
+
+
+<meta name="description" content="面试答题" />
+
+
+<meta name="keywords" content="题解" />
+
+
+<meta property="og:title" content="面试答题" />
+<meta name="twitter:title" content="面试答题" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://kazma233.github.io/posts/2019-03/%E9%9D%A2%E8%AF%95%E7%AD%94%E9%A2%98/" /><meta property="og:description" content="面试答题" />
+<meta name="twitter:description" content="面试答题" /><meta name="twitter:card" content="summary" /><meta property="article:published_time" content="2019-03-01T00:00:00+08:00" /><meta property="article:modified_time" content="2019-03-01T00:00:00+08:00" />
+
+
+<style>
+    @media (prefers-color-scheme: dark) {
+        body[data-theme='auto'] img {
+            filter: brightness(60%);
+        }
+    }
+
+    body[data-theme='dark'] img {
+        filter: brightness(60%);
+    }
+</style>
+
+
+
+
+<link rel="stylesheet" href="https://kazma233.github.io/assets/css/fuji.min.css" />
+
+
+
+
+
+
+
+
+</head>
+
+<body
+  data-theme="auto"
+  data-theme-auto='false'
+  >
+    <script data-cfasync="false">
+  
+  var fujiThemeData = localStorage.getItem('fuji_data-theme');
+  
+  if (!fujiThemeData) {
+    localStorage.setItem('fuji_data-theme', 'auto');
+  } else {
+    
+    if (fujiThemeData !== 'auto') {
+      document.body.setAttribute('data-theme', fujiThemeData === 'dark' ? 'dark' : 'light');
+    }
+  }
+</script>
+
+    <header>
+    <div class="container-lg clearfix">
+        <div class="col-12 header">
+            <a class="title-main" href="https://kazma233.github.io">Kazma&#39;s Blog</a>
+            
+            <span class="title-sub">code and life</span>
+            
+        </div>
+    </div>
+</header>
+
+    <main>
+        <div class="container-lg clearfix">
+            
+            <div class="col-12 col-md-9 float-left content">
+                
+<article>
+    
+    <h2 class="post-item post-title">
+        <a href="https://kazma233.github.io/posts/2019-03/%E9%9D%A2%E8%AF%95%E7%AD%94%E9%A2%98/">面试答题</a>
+    </h2>
+    <div class="post-item post-meta">
+        <span><i class="iconfont icon-today-sharp"></i>&nbsp;2019-03-01</span>
+
+<span><i class="iconfont icon-file-tray-sharp"></i>&nbsp;2955 字</span>
+
+<span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href="/tags/%E9%A2%98%E8%A7%A3">题解</a>&nbsp;</span>
+
+    </div>
+    
+    <div class="post-content markdown-body">
+        <p>通过面试题去查缺补漏，发现自己的盲区</p>
+<p>来自<a href="http://blog.720ui.com/2018/java_interview_final/" target="_blank">梁桂钊的博客</a>，感觉自己有很多不懂的，就这样一题一题的去解答吧</p>
+<h2 id="基本功">基本功</h2>
+<h3 id="面向对象的特征">面向对象的特征</h3>
+<p>还记得第一次学面向对象编程的时候，自己就被这什么面向对象的三大特征给吓住了，这是啥呀，不会呀，这可咋整啊，现在当然是不会有这种感觉了，就再回顾一下吧。</p>
+<ol>
+<li>
+<p>封装</p>
+<ul>
+<li>套话是这么说的： 封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏。</li>
+<li>我现在的想法是封装就是只暴露出有用的信息，让不同的封装对象独立起来，对使用者和安全都有好处，还可以把可以复用的代码或者方法封装成单独的方法或者类。</li>
+</ul>
+</li>
+<li>
+<p>继承</p>
+<ol>
+<li>可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展。</li>
+<li>继承有点像字面意思，有的语言可以多继承(c++)，有的语言用实现的方式来取代多继承(java)，继承了父类，子类可以调用父类的<code>public</code>方法对象等。</li>
+</ol>
+</li>
+<li>
+<p>多态</p>
+<ol>
+<li>多态性（polymorphisn）是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作</li>
+<li>实现多态，有二种方式，覆盖，重载。
+<ul>
+<li>覆盖，是指子类重新定义父类的虚函数的做法。</li>
+<li>重载，是指允许存在多个同名函数，而这些函数的参数表不同（或许参数个数不同，或许参数类型不同，或许两者都不同）。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p><a href="https://blog.csdn.net/cancan8538/article/details/8057095" target="_blank">参考</a></p>
+<h3 id="final-finally-finalize-的区别">final, finally, finalize 的区别</h3>
+<ol>
+<li>
+<p>finnal</p>
+<ul>
+<li>final在Java中是一个保留的关键字，可以声明成员变量、方法、类以及本地变量。一旦你将引用声明作final，你将不能改变这个引用了，编译器会检查代码，如果你试图将变量再次初始化的话，编译器会报编译错误。</li>
+<li>final变量是只读的。</li>
+<li>方法前面加上final关键字，代表这个方法不可以被子类的方法重写</li>
+<li>final类通常功能是完整的，它们不能被继承。像是String类，可以保证线程安全。</li>
+<li>finnal关键字的好处
+<ol>
+<li>final关键字提高了性能。JVM和Java应用都会缓存final变量。</li>
+<li>final变量可以安全的在多线程环境下进行共享，而不需要额外的同步开销。</li>
+<li>使用final关键字，JVM会对方法、变量及类进行优化。</li>
+</ol>
+</li>
+<li>不可变类
+<ol>
+<li>它们的对象是只读的，可以在多线程环境下安全的共享</li>
+<li>不用额外的同步开销</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>finally</p>
+<ul>
+<li>配合try使用，大部分情况下，执行了try块的话(没执行肯定是没戏的)，finally都会执行(包括return)，当然不包括<code>System.exit(0);</code>，断电等情况。</li>
+<li>可以用作释放资源(java8有了try with resource)，或者用来保证某段代码必须执行等操作。</li>
+<li>至于其他骚操作的代码并不想做讨论。在写代码应该尽量避免这种歧义代码。</li>
+</ul>
+</li>
+<li>
+<p>finalize</p>
+<ul>
+<li>java提供finalize()方法，垃圾回收器准备释放内存的时候，会先调用finalize()。</li>
+<li>可以用来做内存的释放(JNI?)，但是并不能保证这个方法在什么时候会运行，还是老老实实的用try&hellip;finally吧</li>
+</ul>
+</li>
+</ol>
+<h3 id="int-和-integer-有什么区别">int 和 Integer 有什么区别</h3>
+<table>
+<thead>
+<tr>
+<th>int</th>
+<th style="text-align:right">integer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基本数据类型</td>
+<td style="text-align:right">包装类</td>
+</tr>
+<tr>
+<td>直接存储数据值</td>
+<td style="text-align:right">Integer实际是对象的引用</td>
+</tr>
+<tr>
+<td>默认值是0</td>
+<td style="text-align:right">默认值是null</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>
+<p>对于两个非new生成的Integer对象，进行比较时，如果两个变量的值在区间-128到127之间，则比较结果为true，如果两个变量的值不在此区间，则比较结果为false</p>
+<pre><code class="language-java">Integer i = 100;
+Integer j = 100;
+System.out.print(i == j); //true
+
+Integer i = 128;
+Integer j = 128;
+System.out.print(i == j); //false
+</code></pre>
+<p>原因是常量池，会从缓存中取值</p>
+</li>
+</ol>
+<h3 id="重载overload和重写override的区别">重载(Overload)和重写(Override)的区别</h3>
+<ol>
+<li>
+<p>重写</p>
+<pre><code class="language-java">class Animal{
+    public void move(){
+         System.out.println(&quot;动物可以移动&quot;);
+    }
+}
+
+class Dog extends Animal{
+    // 这个注解表示这个方法是重写的
+    @Override
+    public void move(){
+        System.out.println(&quot;狗可以跑和走&quot;);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>重载</p>
+<pre><code class="language-java">public class Overloading {
+
+    public int test(){
+        System.out.println(&quot;test1&quot;);
+        return 1;
+    }
+
+    public void test(int a){
+        System.out.println(&quot;test2&quot;);
+    }
+
+    //以下两个参数类型顺序不同
+    public String test(int a,String s){
+        System.out.println(&quot;test3&quot;);
+        return &quot;returntest3&quot;;
+    }
+
+    public String test(String s,int a){
+        System.out.println(&quot;test4&quot;);
+        return &quot;returntest4&quot;;
+    }
+}
+</code></pre>
+</li>
+</ol>
+<h3 id="抽象类和接口有什么区别">抽象类和接口有什么区别</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>抽象类</th>
+<th style="text-align:right">接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>方法实现</td>
+<td>它可以有默认的方法实现</td>
+<td style="text-align:right">接口完全是抽象的。它根本不存在方法的实现</td>
+</tr>
+<tr>
+<td>使用</td>
+<td>使用extends来继承抽象类。如果子类不是抽象类的话，它需要提供抽象类中所有声明的方法的实现。</td>
+<td style="text-align:right">子类使用关键字implements来实现接口。它需要提供接口中所有声明的方法的实现</td>
+</tr>
+<tr>
+<td>构造器</td>
+<td>抽象类可以有构造器</td>
+<td style="text-align:right">接口不能有构造器</td>
+</tr>
+<tr>
+<td>与正常Java类的区别</td>
+<td>除了你不能实例化抽象类之外，它和普通Java类没有任何区别</td>
+<td style="text-align:right">接口是完全不同的类型</td>
+</tr>
+<tr>
+<td>访问修饰符</td>
+<td>抽象方法可以有public、protected和default这些修饰符</td>
+<td style="text-align:right">接口方法默认修饰符是public。你不可以使用其它修饰符。java8新增了default修饰符</td>
+</tr>
+<tr>
+<td>main方法</td>
+<td>抽象方法可以有main方法并且我们可以运行它</td>
+<td style="text-align:right">接口没有main方法，因此我们不能运行它。</td>
+</tr>
+<tr>
+<td>多继承</td>
+<td>抽象方法可以继承一个类和实现多个接口</td>
+<td style="text-align:right">接口只可以继承一个或多个其它接口</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>它比接口速度要快</td>
+<td style="text-align:right">接口是稍微有点慢的，因为它需要时间去寻找在类中实现的方法。</td>
+</tr>
+<tr>
+<td>添加新方法</td>
+<td>如果你往抽象类中添加新的方法，你可以给它提供默认的实现。因此你不需要改变你现在的代码。</td>
+<td style="text-align:right">如果你往接口中添加方法，那么你必须改变实现该接口的类。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="说说反射的用途及实现">说说反射的用途及实现</h3>
+<ol>
+<li>反射 (Reflection) 是 Java 的特征之一，它允许运行中的 Java 程序获取自身的信息，并且可以操作类或对象的内部属性。</li>
+<li>作用
+<ul>
+<li>动态夺获取对象信息</li>
+</ul>
+</li>
+<li>实现
+<ul>
+<li>读取.class文件</li>
+<li>获取类等信息</li>
+</ul>
+</li>
+</ol>
+<h3 id="http-请求的-get-与-post-方式的区别">HTTP 请求的 GET 与 POST 方式的区别</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>GET</th>
+<th style="text-align:right">POST</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全</td>
+<td>会在浏览器历史上展现</td>
+<td style="text-align:right">浏览器无记录</td>
+</tr>
+<tr>
+<td>请求参数</td>
+<td>请求参数一般带在url上，当然放在body也可以，但一般不这么做</td>
+<td style="text-align:right">一般放在请求体上，但是也可以放在url上(query string)</td>
+</tr>
+<tr>
+<td>语义</td>
+<td>表示获取某个资源</td>
+<td style="text-align:right">表示提交数据</td>
+</tr>
+<tr>
+<td>url长度</td>
+<td>url的长度是有限制的，所以URL一般不能太长，而GET是把参数也放在URL上的，就会存在限制。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="session-与-cookie-区别">session 与 cookie 区别</h3>
+<ol>
+<li>cookie存在于浏览器上，以key-value的形式存在，用于存储某些信息(Token，临时数据)，在客户端发起请求时(GET,POST等)会自动带上同域名同路径的cookie发往服务器。</li>
+<li>session存在与服务器上，依赖cookie生存，依赖唯一的cookie值(session_id)来确定用户的身份，从而进行后续的操作。</li>
+</ol>
+<p>参考详细理解cookie的属性(看浏览器cookie一栏)，cookie跨域(CROS)</p>
+<h3 id="session-分布式处理">session 分布式处理</h3>
+<ol>
+<li>
+<p>粘性session</p>
+<p>粘性Session是指将用户锁定到某一个服务器上</p>
+</li>
+<li>
+<p>服务器session复制</p>
+</li>
+<li>
+<p>session共享</p>
+<p>存在redis上</p>
+</li>
+<li>
+<p>jwt</p>
+</li>
+</ol>
+<h3 id="jdbc-流程">JDBC 流程</h3>
+<ol>
+<li>注册驱动</li>
+<li>获取数据库连接(数据库连接池)</li>
+<li>创建Statement(预编译)</li>
+<li>执行sql</li>
+<li>处理结果</li>
+</ol>
+<h3 id="mvc-设计思想">MVC 设计思想</h3>
+<ol>
+<li>Model(模型),View(视图), Controller(控制器)</li>
+<li>它将业务逻辑与展现分离开来，避免了将业务逻辑与展现混杂在一起带来的显示的不一致性和业务逻辑代码重复地分布在用于展现的代码中。</li>
+<li>层次清晰，易于开发者对这三个部分分工与协作，易于维护者识别不同的层次实施不同的维护策略。</li>
+<li>系统具有更好的重用性，包括用户界面的重用和业务逻辑处理包的重用，特别是业务逻辑处理包，如果遵循相应的java规范，它不仅可以在web应用程序中使用，而且可以在包括桌面、分布式环境下的得到重用。</li>
+<li>系统更易于扩展和移植。</li>
+<li>系统更易于维护。</li>
+<li>采用MVC模式开发的系统更健壮。</li>
+</ol>
+<h3 id="equals-与--的区别">equals 与 == 的区别</h3>
+<ol>
+<li>equals比较的是值，而==比较的是引用</li>
+<li>注意常量池</li>
+</ol>
+    </div>
+</article>
+
+
+<div class="license markdown-body">
+    <blockquote>
+        <p>除特殊注明部分，本站内容采用 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
+               target="_blank">CC BY-NC-SA 4.0</a> 进行许可。</p>
+    </blockquote>
+</div>
+
+
+
+            </div>
+            <aside class="col-12 col-md-3 float-left sidebar">
+    
+    <div class="sidebar-item sidebar-pages">
+        <h3>页面</h3>
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/archives/">Archives</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+            <li>
+                <a href="/search/">Search</a>
+            </li>
+            
+            <li>
+                <a href="/index.xml">RSS</a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-links">
+        <h3>链接</h3>
+        <ul>
+            
+            <li>
+                <a href="https://github.com/kazma233" target="_blank"><span>GitHub</span></a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-tags">
+        <h3>标签</h3>
+        <div>
+            
+            <span>
+                <a href="/tags/android/">Android</a>
+            </span>
+            
+            <span>
+                <a href="/tags/consul/">consul</a>
+            </span>
+            
+            <span>
+                <a href="/tags/frp/">frp</a>
+            </span>
+            
+            <span>
+                <a href="/tags/git/">git</a>
+            </span>
+            
+            <span>
+                <a href="/tags/jaeger/">jaeger</a>
+            </span>
+            
+            <span>
+                <a href="/tags/jenkins/">Jenkins</a>
+            </span>
+            
+            <span>
+                <a href="/tags/rdp/">RDP</a>
+            </span>
+            
+            <span>
+                <a href="/tags/scoop/">scoop</a>
+            </span>
+            
+            <span>
+                <a href="/tags/shadowsocks/">shadowsocks</a>
+            </span>
+            
+            <span>
+                <a href="/tags/springcloud-gateway/">SpringCloud-Gateway</a>
+            </span>
+            
+            <span>
+                <a href="/tags/string/">String</a>
+            </span>
+            
+            <span>
+                <a href="/tags/ubuntu/">Ubuntu</a>
+            </span>
+            
+            <span>
+                <a href="/tags/v2ray/">V2Ray</a>
+            </span>
+            
+            <span>
+                <a href="/tags/wall/">wall</a>
+            </span>
+            
+            <span>
+                <a href="/tags/xxl-job/">xxl-job</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/">并发工具</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%80%BB%E7%BB%93/">总结</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%95%99%E7%A8%8B/">教程</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%95%99%E7%A8%8Bgit/">教程,git</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%AC%94%E8%AE%B0postgresql/">笔记,PostgreSQL</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%B3%BB%E7%BB%9F/">系统</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E8%BF%90%E7%BB%B4/">运维</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E9%A2%98%E8%A7%A3/">题解</a>
+            </span>
+            
+        </div>
+    </div>
+    <div class="sidebar-item sidebar-toc">
+        <h3>目录</h3><nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本功">基本功</a>
+      <ul>
+        <li><a href="#面向对象的特征">面向对象的特征</a></li>
+        <li><a href="#final-finally-finalize-的区别">final, finally, finalize 的区别</a></li>
+        <li><a href="#int-和-integer-有什么区别">int 和 Integer 有什么区别</a></li>
+        <li><a href="#重载overload和重写override的区别">重载(Overload)和重写(Override)的区别</a></li>
+        <li><a href="#抽象类和接口有什么区别">抽象类和接口有什么区别</a></li>
+        <li><a href="#说说反射的用途及实现">说说反射的用途及实现</a></li>
+        <li><a href="#http-请求的-get-与-post-方式的区别">HTTP 请求的 GET 与 POST 方式的区别</a></li>
+        <li><a href="#session-与-cookie-区别">session 与 cookie 区别</a></li>
+        <li><a href="#session-分布式处理">session 分布式处理</a></li>
+        <li><a href="#jdbc-流程">JDBC 流程</a></li>
+        <li><a href="#mvc-设计思想">MVC 设计思想</a></li>
+        <li><a href="#equals-与--的区别">equals 与 == 的区别</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+</aside>
+
+        </div>
+        <div class="btn">
+    <div class="btn-menu" id="btn-menu">
+        <i class="iconfont icon-grid-sharp"></i>
+    </div>
+    <div class="btn-toggle-mode">
+        <i class="iconfont icon-contrast-sharp"></i>
+    </div>
+    <div class="btn-scroll-top">
+        <i class="iconfont icon-chevron-up-circle-sharp"></i>
+    </div>
+</div>
+<aside class="sidebar-mobile" style="display: none;">
+  <div class="sidebar-wrapper">
+    
+    <div class="sidebar-item sidebar-pages">
+        <h3>页面</h3>
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/archives/">Archives</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+            <li>
+                <a href="/search/">Search</a>
+            </li>
+            
+            <li>
+                <a href="/index.xml">RSS</a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-links">
+        <h3>链接</h3>
+        <ul>
+            
+            <li>
+                <a href="https://github.com/kazma233" target="_blank"><span>GitHub</span></a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-tags">
+        <h3>标签</h3>
+        <div>
+            
+            <span>
+                <a href="/tags/android/">Android</a>
+            </span>
+            
+            <span>
+                <a href="/tags/consul/">consul</a>
+            </span>
+            
+            <span>
+                <a href="/tags/frp/">frp</a>
+            </span>
+            
+            <span>
+                <a href="/tags/git/">git</a>
+            </span>
+            
+            <span>
+                <a href="/tags/jaeger/">jaeger</a>
+            </span>
+            
+            <span>
+                <a href="/tags/jenkins/">Jenkins</a>
+            </span>
+            
+            <span>
+                <a href="/tags/rdp/">RDP</a>
+            </span>
+            
+            <span>
+                <a href="/tags/scoop/">scoop</a>
+            </span>
+            
+            <span>
+                <a href="/tags/shadowsocks/">shadowsocks</a>
+            </span>
+            
+            <span>
+                <a href="/tags/springcloud-gateway/">SpringCloud-Gateway</a>
+            </span>
+            
+            <span>
+                <a href="/tags/string/">String</a>
+            </span>
+            
+            <span>
+                <a href="/tags/ubuntu/">Ubuntu</a>
+            </span>
+            
+            <span>
+                <a href="/tags/v2ray/">V2Ray</a>
+            </span>
+            
+            <span>
+                <a href="/tags/wall/">wall</a>
+            </span>
+            
+            <span>
+                <a href="/tags/xxl-job/">xxl-job</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/">并发工具</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%80%BB%E7%BB%93/">总结</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%95%99%E7%A8%8B/">教程</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%95%99%E7%A8%8Bgit/">教程,git</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/">碎碎念</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%AC%94%E8%AE%B0postgresql/">笔记,PostgreSQL</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E7%B3%BB%E7%BB%9F/">系统</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E8%BF%90%E7%BB%B4/">运维</a>
+            </span>
+            
+            <span>
+                <a href="/tags/%E9%A2%98%E8%A7%A3/">题解</a>
+            </span>
+            
+        </div>
+    </div>
+    
+    
+    
+    <div class="sidebar-item sidebar-toc">
+        <h3>目录</h3>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本功">基本功</a>
+      <ul>
+        <li><a href="#面向对象的特征">面向对象的特征</a></li>
+        <li><a href="#final-finally-finalize-的区别">final, finally, finalize 的区别</a></li>
+        <li><a href="#int-和-integer-有什么区别">int 和 Integer 有什么区别</a></li>
+        <li><a href="#重载overload和重写override的区别">重载(Overload)和重写(Override)的区别</a></li>
+        <li><a href="#抽象类和接口有什么区别">抽象类和接口有什么区别</a></li>
+        <li><a href="#说说反射的用途及实现">说说反射的用途及实现</a></li>
+        <li><a href="#http-请求的-get-与-post-方式的区别">HTTP 请求的 GET 与 POST 方式的区别</a></li>
+        <li><a href="#session-与-cookie-区别">session 与 cookie 区别</a></li>
+        <li><a href="#session-分布式处理">session 分布式处理</a></li>
+        <li><a href="#jdbc-流程">JDBC 流程</a></li>
+        <li><a href="#mvc-设计思想">MVC 设计思想</a></li>
+        <li><a href="#equals-与--的区别">equals 与 == 的区别</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+    
+  </div>
+</aside>
+    </main>
+
+    <footer>
+    <div class="container-lg clearfix">
+        <div class="col-12 footer">
+            
+            <span>&copy; 2021
+                <a href="https://kazma233.github.io">Kazma</a>
+                
+                | 基于 <a href="https://github.com/dsrkafuu/hugo-theme-fuji/"
+                   target="_blank">Fuji-v2</a> &amp; <a href="https://gohugo.io/"
+                                                    target="_blank">Hugo</a> 构建
+            </span>
+        </div>
+    </div>
+</footer>
+
+    
+<script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/components/prism-core.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+
+
+<script defer src="/assets/js/fuji.min.js"></script>
+
+
+
+</body>
+
+</html>
