@@ -6,7 +6,17 @@
     <description>Recent content on Kazma&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-hans</language>
-    <lastBuildDate>Mon, 18 Jan 2021 00:19:27 +0800</lastBuildDate><atom:link href="https://kazma233.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 29 Jun 2021 21:14:51 +0800</lastBuildDate><atom:link href="https://kazma233.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>光圈，快门，ISO</title>
+      <link>https://kazma233.github.io/posts/2021-06/%E5%85%89%E5%9C%88%E5%BF%AB%E9%97%A8iso/</link>
+      <pubDate>Tue, 29 Jun 2021 21:14:51 +0800</pubDate>
+      
+      <guid>https://kazma233.github.io/posts/2021-06/%E5%85%89%E5%9C%88%E5%BF%AB%E9%97%A8iso/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;p&gt;好久不更新了，原因嘛，除了工作业务上特别繁忙，还迷上了另一件事，那就是&lt;code&gt;摄影&lt;/code&gt;。陆陆续续学习了接近一年，自己想要巩固一下基础，就打算写点东西，沉淀下来，同时还能给别人一点帮助。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>git的submodule操作</title>
       <link>https://kazma233.github.io/posts/2021-01/git%E7%9A%84submodule%E6%93%8D%E4%BD%9C/</link>
