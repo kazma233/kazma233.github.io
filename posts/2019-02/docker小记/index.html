@@ -1,0 +1,153 @@
+<!doctype html><html lang=zh-hans><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=HandheldFriendly content="True"><meta http-equiv=x-ua-compatible content="IE=edge"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=generator content="Hugo 0.107.0"><link rel="shortcut icon" href=https://cdn.jsdelivr.net/gh/dsrkafuu/dsr-cdn-main@1/images/favicons/dsrca.ico><title>docker的小笔记 - Kazma's Blog</title><meta name=author content="Kazma"><meta name=description content="docker的小笔记"><meta name=keywords content="笔记"><meta property="og:title" content="docker的小笔记"><meta name=twitter:title content="docker的小笔记"><meta property="og:type" content="article"><meta property="og:url" content="https://kazma233.github.io/posts/2019-02/docker%E5%B0%8F%E8%AE%B0/"><meta property="og:description" content="docker的小笔记"><meta name=twitter:description content="docker的小笔记"><meta name=twitter:card content="summary"><meta property="article:published_time" content="2019-02-01T00:00:00+08:00"><meta property="article:modified_time" content="2019-02-01T00:00:00+08:00"><style>@media(prefers-color-scheme:dark){body[data-theme=auto] img{filter:brightness(60%)}}body[data-theme=dark] img{filter:brightness(60%)}</style><link rel=stylesheet href=https://kazma233.github.io/assets/css/fuji.min.b4a21b5d3eb1d0a51297e31230a65fc25e387843e45ec3a2d9176cd8d163c216d99b9b13a618b28f537c3b559ec8a408183b0fbfad48daddb9befa7d3ef90eed.css integrity="sha512-tKIbXT6x0KUSl+MSMKZfwl44eEPkXsOi2Rds2NFjwhbZm5sTphiyj1N8O1WeyKQIGDsPv61I2t25vvp9PvkO7Q=="></head><body data-theme=auto data-theme-auto=false><script data-cfasync=false>var fujiThemeData=localStorage.getItem("fuji_data-theme");fujiThemeData?fujiThemeData!=="auto"&&document.body.setAttribute("data-theme",fujiThemeData==="dark"?"dark":"light"):localStorage.setItem("fuji_data-theme","auto")</script><header><div class="container-lg clearfix"><div class="col-12 header"><a class=title-main href=https://kazma233.github.io>Kazma's Blog</a>
+<span class=title-sub>code and life</span></div></div></header><main><div class="container-lg clearfix"><div class="col-12 col-md-9 float-left content"><article><h2 class="post-item post-title"><a href=https://kazma233.github.io/posts/2019-02/docker%E5%B0%8F%E8%AE%B0/>docker的小笔记</a></h2><div class="post-item post-meta"><span><i class="iconfont icon-today-sharp"></i>&nbsp;2019-02-01</span>
+<span><i class="iconfont icon-file-tray-sharp"></i>&nbsp;2352 字</span>
+<span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href=/tags/%E7%AC%94%E8%AE%B0>笔记</a>&nbsp;</span></div><div class="post-content markdown-body"><p>docker在安装某些软件时很方便，记录下来，顺带学习docker</p><h2 id=安装docker>安装docker</h2><p>详细看<a href=https://docs.docker.com/install/linux/docker-ce/ubuntu/ target=_blank>官方文档</a></p><h2 id=一个软件>一个软件</h2><ol><li>安装portainer(管理docker)
+详情看<a href=https://portainer.readthedocs.io/en/latest/deployment.html target=_blank>这里</a></li></ol><pre><code class=language-dockerfile>docker volume create portainer_data
+docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
+</code></pre><h2 id=基本命令>基本命令</h2><ol><li><p>run</p><ul><li><code>docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</code></li><li>-p 表示将容器的某个端口暴露出来， 比如<code>-p 7000:8000</code>表示将容器的8000端口暴露出来并映射到本地的7000端口</li><li>-i 表示可操作，即使未连接STDIN也保持打开状态</li><li>-t 分配伪TTY，和-i连-it 表示容器的 Shell 映射到当前的 Shell</li><li>-d 在后台运行容器并打印容器ID</li><li>-v 绑定挂载卷，用于容器卷和本地卷绑定，比如<code>-v /docekr/mysql/data:/mysql/data</code>表示将容器的目录<code>/mysql/data</code>绑定到本地的<code>/docekr/mysql/data</code>目录上</li><li>-e 设置环境变量</li><li>&ndash;rm 退出时自动删除容器</li><li>&ndash;name 为容器分配一个名称</li></ul></li><li><p>exec</p><ul><li><code>docker exec [OPTIONS] CONTAINER COMMAND [ARG...]</code></li><li>用于进入一个启动的容器: <code>docker exec -it container_name bash</code></li></ul></li><li><p>commit</p><ul><li><code>docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</code></li><li>用于创建一个自己的镜像: <code>docker commit 89a47b5b749e book-service:latest</code></li></ul></li><li><p>其他的比如<code>container</code>,<code>image</code>,<code>logs</code>命令都很常用，都可以用<code>docker 命令 --help</code>来查看说明</p></li></ol><h2 id=dockerfile>dockerfile</h2><p>Docker可以通过阅读Dockerfile中的指令来自动构建映像。 Dockerfile是一个文本文档，其中包含用户可以在命令行上调用以组装映像的所有命令。使用docker build的用户可以创建自动执行的构建，该构建可以连续执行几个命令行指令。</p><pre><code class=language-dockerfile>docker build -f elasticsearch.Dockerfile -t my-elastic .
+</code></pre><ol><li><p>.dockerignore 文件</p><p>在Docker CLI将上下文发送到Docker守护程序之前，它将在上下文的根目录中查找名为.dockerignore的文件。如果此文件存在，则CLI会修改上下文以排除与其中的模式匹配的文件和目录。这有助于避免不必要地将大型文件或敏感文件和目录发送到守护程序，并避免使用ADD或COPY将它们添加到映像中。</p><table><thead><tr><th>规则</th><th>行为</th></tr></thead><tbody><tr><td># comment</td><td>忽略这个</td></tr><tr><td>*/temp*</td><td>在根的任何直接子目录中排除名称以temp开头的文件和目录。例如，排除纯文件/somedir/temporary.txt，以及目录/somedir/temp</td></tr><tr><td>*/*/temp*</td><td>从根以下两级的任何子目录中排除以temp开头的文件和目录。例如，排除/somedir/subdir/temporary.txt</td></tr><tr><td>temp?</td><td>排除名称为temp的一个字符扩展名的根目录中的文件和目录。例如，排除/ tempa和/ tempb。</td></tr></tbody></table></li><li><p>dockerfile命令:</p><ul><li><code>FROM &lt;image>[:&lt;tag>] [AS &lt;name>]]</code>: 挑选一个基础镜像作为基础，FROM指令初始化一个新的构建阶段，并为后续指令设置基本映像。因此，有效的Dockerfile必须以FROM指令开头。</li><li><code>RUN</code><ul><li><code>RUN &lt;command> (shell form, the command is run in a shell, which by default is /bin/sh -c on Linux or cmd /S /C on Windows)</code></li><li><code>RUN ["executable", "param1", "param2"] (exec form)</code></li><li>RUN指令将在当前映像顶部的新层中执行任何命令，并提交结果。生成的提交映像将用于Dockerfile中的下一步。</li><li>在shell形式中，可以使用\（反斜杠）将一条RUN指令继续到下一行</li></ul></li><li><code>CMD</code><ul><li><code>CMD ["executable","param1","param2"] (exec form, this is the preferred form)</code></li><li><code>CMD ["param1","param2"] (as default parameters to ENTRYPOINT)</code></li><li><code>CMD command param1 param2 (shell form)</code></li><li>Dockerfile中只能有一条CMD指令。如果您列出多个CMD，则只有最后一个CMD才会生效。</li></ul></li><li><code>EXPOSE &lt;port> [&lt;port>/&lt;protocol>...]</code>: EXPOSE指令通知Docker运行时容器在指定的网络端口上进行侦听。您可以指定端口是侦听TCP还是UDP，如果未指定协议，则默认值为TCP。</li><li><code>ENV &lt;key> &lt;value></code>: ENV指令将环境变量<key>设置为值<value>。此值将在构建阶段中所有后续指令的环境中使用，并且在许多情况下也可以内联替换。</li><li><code>ADD</code><ul><li><code>ADD [--chown=&lt;user>:&lt;group>] &lt;src>... &lt;dest></code></li><li><code>ADD [--chown=&lt;user>:&lt;group>] ["&lt;src>",... "&lt;dest>"] (路径上有空格必须使用这种方式)</code></li><li>ADD指令从&lt;src>复制新文件，目录或远程文件URL，并将它们添加到映像的文件系统中的路径&lt;dest></li><li>源文件解释:</li><li><code>ADD hom* /mydir/</code> adds all files starting with &ldquo;hom&rdquo;</li><li><code>ADD hom?.txt /mydir/</code> ? is replaced with any single character, e.g., &ldquo;home.txt&rdquo;</li><li>目标文件解释:</li><li><code>ADD test relativeDir/</code> adds &ldquo;test&rdquo; to <code>WORKDIR/relativeDir/</code></li><li><code>ADD test /absoluteDir/</code> adds &ldquo;test&rdquo; to <code>/absoluteDir/</code></li></ul></li><li><code>COPY</code>只能是本地文件</li><li><code>ENTRYPOINT</code>启动容器会执行</li></ul></li><li><p>示例(Dockerfile)</p></li></ol><pre><code class=language-yml>FROM openjdk:11
+
+WORKDIR /book
+
+COPY ./book-service-0.0.1-SNAPSHOT.jar /book/book.jar
+
+EXPOSE 9700
+
+ENTRYPOINT [&quot;java&quot;, &quot;-jar&quot;, &quot;book.jar&quot;, &quot;--spring.profiles.active=release&quot;]
+</code></pre><h2 id=docekr-compose>docekr compose</h2><p><a href=https://docs.docker.com/compose/#features target=_blank>功能列表</a></p><p>Compose是用于定义和运行多容器Docker应用程序的工具。通过Compose，您可以使用YAML文件来配置应用程序的服务。然后，使用一个命令，就可以从配置中创建并启动所有服务</p><p>光听很懵逼，实际体验一下</p><p>需要一个<code>.yml</code>的配置文件(docker-compose.yml)，我这里用<code>docker-compose</code>同时部署<code>java服务</code>和<code>MongoDB</code>作为演示</p><pre><code class=language-yml>version: '3.5'
+
+services:
+  mongo:
+    image: mongo
+    container_name: book-mongo
+    ports:
+      - 27010:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - /docker-data/mongodb/:/data/db/
+    networks:
+      - kazma_net
+    restart: always
+  blog:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: book-service
+    volumes:
+      - ~/book-service-logs:/book-service-logs
+    ports:
+      - 9700:9700
+    networks:
+      - kazma_net
+    restart: always
+    depends_on:
+      - mongo
+
+networks:
+  kazma_net:
+    name: kazma_network
+</code></pre><p>然后执行</p><pre><code class=language-bash>docker-compose -f docker-compose.yml up -d
+</code></pre><p>将会自动构建<code>Dockerfile</code>并且创建好<code>MongoDB的环境</code></p><ol><li><p>关于上面的指令</p><ul><li>version: 表示使用的docker-compose的版本，版本不同有一些命令不一样</li><li>services: 下面就是所有的docker container了</li><li><code>mongo</code>和<code>blog</code>是自定义的名字，用于区分不同的配置，这里分别是配置<code>MongoDB</code>和<code>java服务</code></li><li><code>image</code>和<code>build</code>: <code>image</code>表示使用<code>docekr shop</code>里的镜像，而<code>build</code>则使用指定的<code>Dockerfile</code>构建的镜像</li><li><code>container_name</code>: 可以指定容器的名称</li><li><code>ports</code>: 暴露出去端口并且映射到本地，是数组，可以有多个</li><li><code>volumes</code>: 绑定挂载卷，用于容器卷和本地卷绑定，其实和<code>docekr run</code>的<code>-v</code>一样，然后这个也是数组</li><li><code>environment</code>: 环境变量，也是数组</li><li><code>networks</code>: 新建一个网段或者使用，我在最后新建了叫<code>kazma_net</code>的网络，然后在前面指定使用</li><li><code>restart</code>: 是否重启<code>always</code></li><li><code>depends_on</code>: 依赖某些容器，等某些容器先启动后再启动这个容器，我这里很明显<code>java服务</code>依赖<code>mongo</code>的服务</li></ul></li><li><p>其他</p><pre><code class=language-bash>docker-compose stop
+docker-compose restart
+ocker-compose down -v
+</code></pre></li><li><p><code>.env</code></p><p>和<code>docker-compose.yml</code>处于同级目录，是<code>docker-compose</code>的环境配置，可以在docker-compose.yml中使用<code>${xxx}</code>来引用</p><ul><li>语法：<ol><li>VAR=VAL格式</li><li>#号开头将会被忽略</li><li>空行会被忽略</li><li>如果是VAR=&ldquo;VAL&rdquo;，那么"也是字符串，不会被处理</li></ol></li></ul></li></ol></div></article><div class="license markdown-body"><blockquote><p>除特殊注明部分，本站内容采用 <a rel=license href=http://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a> 进行许可。</p></blockquote></div></div><aside class="col-12 col-md-3 float-left sidebar"><div class="sidebar-item sidebar-pages"><h3>页面</h3><ul><li><a href=/>Home</a></li><li><a href=/archives/>Archives</a></li><li><a href=/about/>About</a></li><li><a href=/search/>Search</a></li><li><a href=/index.xml>RSS</a></li></ul></div><div class="sidebar-item sidebar-links"><h3>链接</h3><ul><li><a href=https://github.com/kazma233 target=_blank><span>GitHub</span></a></li></ul></div><div class="sidebar-item sidebar-tags"><h3>标签</h3><div><span><a href=/tags/ai/>AI</a></span>
+<span><a href=/tags/aigc/>AIGC</a></span>
+<span><a href=/tags/android/>Android</a></span>
+<span><a href=/tags/article/>article</a></span>
+<span><a href=/tags/consul/>consul</a></span>
+<span><a href=/tags/frp/>frp</a></span>
+<span><a href=/tags/git/>git</a></span>
+<span><a href=/tags/jaeger/>jaeger</a></span>
+<span><a href=/tags/jenkins/>Jenkins</a></span>
+<span><a href=/tags/newsletter/>newsletter</a></span>
+<span><a href=/tags/rdp/>RDP</a></span>
+<span><a href=/tags/scoop/>scoop</a></span>
+<span><a href=/tags/shadowsocks/>shadowsocks</a></span>
+<span><a href=/tags/springcloud-gateway/>SpringCloud-Gateway</a></span>
+<span><a href=/tags/string/>String</a></span>
+<span><a href=/tags/t%E5%9E%8B%E4%BA%BA%E6%89%8D/>T型人才</a></span>
+<span><a href=/tags/ubuntu/>Ubuntu</a></span>
+<span><a href=/tags/v2ray/>V2Ray</a></span>
+<span><a href=/tags/wall/>wall</a></span>
+<span><a href=/tags/xxl-job/>xxl-job</a></span>
+<span><a href=/tags/%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%9F%A9%E9%98%B5/>不确定性矩阵</a></span>
+<span><a href=/tags/%E4%BA%BA%E5%B7%A5%E5%9F%B9%E8%82%B2%E9%92%BB%E7%9F%B3/>人工培育钻石</a></span>
+<span><a href=/tags/%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96/>信息获取</a></span>
+<span><a href=/tags/%E5%80%A6%E6%80%A0%E7%A4%BE%E4%BC%9A/>倦怠社会</a></span>
+<span><a href=/tags/%E5%85%B3%E4%BA%8E%E5%AF%86%E7%A0%81/>关于密码</a></span>
+<span><a href=/tags/%E5%86%99%E4%BD%9C/>写作</a></span>
+<span><a href=/tags/%E5%88%9B%E4%B8%9A/>创业</a></span>
+<span><a href=/tags/%E5%A4%B1%E4%B8%9A/>失业</a></span>
+<span><a href=/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/>年度总结</a></span>
+<span><a href=/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/>并发工具</a></span>
+<span><a href=/tags/%E6%8B%96%E5%BB%B6%E7%97%87/>拖延症</a></span>
+<span><a href=/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/>搜索引擎</a></span>
+<span><a href=/tags/%E6%91%84%E5%BD%B1/>摄影</a></span>
+<span><a href=/tags/%E6%95%99%E7%A8%8B/>教程</a></span>
+<span><a href=/tags/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/>数字经济</a></span>
+<span><a href=/tags/%E6%95%B0%E7%A0%81%E4%BA%A7%E5%93%81%E5%8F%91%E5%B8%83%E5%91%A8/>数码产品发布周</a></span>
+<span><a href=/tags/%E6%97%A0%E6%83%B3%E6%B3%95/>无想法</a></span>
+<span><a href=/tags/%E6%B8%B8%E8%A1%8C/>游行</a></span>
+<span><a href=/tags/%E6%BA%90%E7%A0%81/>源码</a></span>
+<span><a href=/tags/%E7%AC%94%E8%AE%B0/>笔记</a></span>
+<span><a href=/tags/%E7%B3%BB%E7%BB%9F/>系统</a></span>
+<span><a href=/tags/%E7%BD%91%E7%BB%9C%E6%9A%B4%E5%8A%9B/>网络暴力</a></span>
+<span><a href=/tags/%E8%A7%84%E5%88%92/>规划</a></span>
+<span><a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB/>阅读</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB%E8%BE%93%E5%85%A5/>阅读输入</a></span>
+<span><a href=/tags/%E9%AB%98%E6%B8%A9/>高温</a></span></div></div><div class="sidebar-item sidebar-toc"><h3>目录</h3><nav id=TableOfContents><ul><li><a href=#安装docker>安装docker</a></li><li><a href=#一个软件>一个软件</a></li><li><a href=#基本命令>基本命令</a></li><li><a href=#dockerfile>dockerfile</a></li><li><a href=#docekr-compose>docekr compose</a></li></ul></nav></div></aside></div><div class=btn><div class=btn-menu id=btn-menu><i class="iconfont icon-grid-sharp"></i></div><div class=btn-toggle-mode><i class="iconfont icon-contrast-sharp"></i></div><div class=btn-scroll-top><i class="iconfont icon-chevron-up-circle-sharp"></i></div></div><aside class=sidebar-mobile style=display:none><div class=sidebar-wrapper><div class="sidebar-item sidebar-pages"><h3>页面</h3><ul><li><a href=/>Home</a></li><li><a href=/archives/>Archives</a></li><li><a href=/about/>About</a></li><li><a href=/search/>Search</a></li><li><a href=/index.xml>RSS</a></li></ul></div><div class="sidebar-item sidebar-links"><h3>链接</h3><ul><li><a href=https://github.com/kazma233 target=_blank><span>GitHub</span></a></li></ul></div><div class="sidebar-item sidebar-tags"><h3>标签</h3><div><span><a href=/tags/ai/>AI</a></span>
+<span><a href=/tags/aigc/>AIGC</a></span>
+<span><a href=/tags/android/>Android</a></span>
+<span><a href=/tags/article/>article</a></span>
+<span><a href=/tags/consul/>consul</a></span>
+<span><a href=/tags/frp/>frp</a></span>
+<span><a href=/tags/git/>git</a></span>
+<span><a href=/tags/jaeger/>jaeger</a></span>
+<span><a href=/tags/jenkins/>Jenkins</a></span>
+<span><a href=/tags/newsletter/>newsletter</a></span>
+<span><a href=/tags/rdp/>RDP</a></span>
+<span><a href=/tags/scoop/>scoop</a></span>
+<span><a href=/tags/shadowsocks/>shadowsocks</a></span>
+<span><a href=/tags/springcloud-gateway/>SpringCloud-Gateway</a></span>
+<span><a href=/tags/string/>String</a></span>
+<span><a href=/tags/t%E5%9E%8B%E4%BA%BA%E6%89%8D/>T型人才</a></span>
+<span><a href=/tags/ubuntu/>Ubuntu</a></span>
+<span><a href=/tags/v2ray/>V2Ray</a></span>
+<span><a href=/tags/wall/>wall</a></span>
+<span><a href=/tags/xxl-job/>xxl-job</a></span>
+<span><a href=/tags/%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%9F%A9%E9%98%B5/>不确定性矩阵</a></span>
+<span><a href=/tags/%E4%BA%BA%E5%B7%A5%E5%9F%B9%E8%82%B2%E9%92%BB%E7%9F%B3/>人工培育钻石</a></span>
+<span><a href=/tags/%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96/>信息获取</a></span>
+<span><a href=/tags/%E5%80%A6%E6%80%A0%E7%A4%BE%E4%BC%9A/>倦怠社会</a></span>
+<span><a href=/tags/%E5%85%B3%E4%BA%8E%E5%AF%86%E7%A0%81/>关于密码</a></span>
+<span><a href=/tags/%E5%86%99%E4%BD%9C/>写作</a></span>
+<span><a href=/tags/%E5%88%9B%E4%B8%9A/>创业</a></span>
+<span><a href=/tags/%E5%A4%B1%E4%B8%9A/>失业</a></span>
+<span><a href=/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/>年度总结</a></span>
+<span><a href=/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/>并发工具</a></span>
+<span><a href=/tags/%E6%8B%96%E5%BB%B6%E7%97%87/>拖延症</a></span>
+<span><a href=/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/>搜索引擎</a></span>
+<span><a href=/tags/%E6%91%84%E5%BD%B1/>摄影</a></span>
+<span><a href=/tags/%E6%95%99%E7%A8%8B/>教程</a></span>
+<span><a href=/tags/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/>数字经济</a></span>
+<span><a href=/tags/%E6%95%B0%E7%A0%81%E4%BA%A7%E5%93%81%E5%8F%91%E5%B8%83%E5%91%A8/>数码产品发布周</a></span>
+<span><a href=/tags/%E6%97%A0%E6%83%B3%E6%B3%95/>无想法</a></span>
+<span><a href=/tags/%E6%B8%B8%E8%A1%8C/>游行</a></span>
+<span><a href=/tags/%E6%BA%90%E7%A0%81/>源码</a></span>
+<span><a href=/tags/%E7%AC%94%E8%AE%B0/>笔记</a></span>
+<span><a href=/tags/%E7%B3%BB%E7%BB%9F/>系统</a></span>
+<span><a href=/tags/%E7%BD%91%E7%BB%9C%E6%9A%B4%E5%8A%9B/>网络暴力</a></span>
+<span><a href=/tags/%E8%A7%84%E5%88%92/>规划</a></span>
+<span><a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB/>阅读</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB%E8%BE%93%E5%85%A5/>阅读输入</a></span>
+<span><a href=/tags/%E9%AB%98%E6%B8%A9/>高温</a></span></div></div><div class="sidebar-item sidebar-toc"><h3>目录</h3><nav id=TableOfContents><ul><li><a href=#安装docker>安装docker</a></li><li><a href=#一个软件>一个软件</a></li><li><a href=#基本命令>基本命令</a></li><li><a href=#dockerfile>dockerfile</a></li><li><a href=#docekr-compose>docekr compose</a></li></ul></nav></div></div></aside></main><footer><div class="container-lg clearfix"><div class="col-12 footer"><span>&copy; 2023
+<a href=https://kazma233.github.io>Kazma</a>
+| 基于 <a href=https://github.com/dsrkafuu/hugo-theme-fuji/ target=_blank>Fuji-v2</a> & <a href=https://gohugo.io/ target=_blank>Hugo</a> 构建</span></div></div></footer><script defer src=https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js integrity="sha512-N9IJRoc3LaP3NDoiGkcPa4gG94kapGpaA5Zq9/Dr04uf5TbLFU5q0o8AbRhLKUUlp8QFS2u7S+Yti0U7QtuZvQ==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js integrity="sha512-q583ppKrCRc7N5O0n2nzUiJ+suUv7Et1JGels4bXOaMFQcamPk9HjdUknZuuFjBNs7tsMuadge5k9RzdmO+1GQ==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/prismjs@1.27.0/components/prism-core.min.js integrity="sha512-LCKPTo0gtJ74zCNMbWw04ltmujpzSR4oW+fgN+Y1YclhM5ZrHCZQAJE4quEodcI/G122sRhSGU2BsSRUZ2Gu3w==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/prismjs@1.27.0/plugins/autoloader/prism-autoloader.min.js integrity="sha512-GP4x8UWxWyh4BMbyJGOGneiTbkrWEF5izsVJByzVLodP8CuJH/n936+yQDMJJrOPUHLgyPbLiGw2rXmdvGdXHA==" crossorigin=anonymous></script>
+<script defer src=/assets/js/fuji.min.645f1123be695831f419ab54c1bcba327325895c740014006e57070d4f3e5d6b553e929c4b46f40ea707249e9c7f7c2a446d32a39ce7319f80a34525586a8e0f.js integrity="sha512-ZF8RI75pWDH0GatUwby6MnMliVx0ABQAblcHDU8+XWtVPpKcS0b0DqcHJJ6cf3wqRG0yo5znMZ+Ao0UlWGqODw=="></script></body></html>

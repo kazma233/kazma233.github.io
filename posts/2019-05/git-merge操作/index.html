@@ -1,0 +1,110 @@
+<!doctype html><html lang=zh-hans><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=HandheldFriendly content="True"><meta http-equiv=x-ua-compatible content="IE=edge"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=generator content="Hugo 0.107.0"><link rel="shortcut icon" href=https://cdn.jsdelivr.net/gh/dsrkafuu/dsr-cdn-main@1/images/favicons/dsrca.ico><title>git merge操作(rebase) - Kazma's Blog</title><meta name=author content="Kazma"><meta name=description content="git merge操作(rebase)"><meta name=keywords content="教程,git"><meta property="og:title" content="git merge操作(rebase)"><meta name=twitter:title content="git merge操作(rebase)"><meta property="og:type" content="article"><meta property="og:url" content="https://kazma233.github.io/posts/2019-05/git-merge%E6%93%8D%E4%BD%9C/"><meta property="og:description" content="git merge操作(rebase)"><meta name=twitter:description content="git merge操作(rebase)"><meta name=twitter:card content="summary"><meta property="article:published_time" content="2019-05-16T19:53:00+08:00"><meta property="article:modified_time" content="2019-05-16T19:53:00+08:00"><style>@media(prefers-color-scheme:dark){body[data-theme=auto] img{filter:brightness(60%)}}body[data-theme=dark] img{filter:brightness(60%)}</style><link rel=stylesheet href=https://kazma233.github.io/assets/css/fuji.min.b4a21b5d3eb1d0a51297e31230a65fc25e387843e45ec3a2d9176cd8d163c216d99b9b13a618b28f537c3b559ec8a408183b0fbfad48daddb9befa7d3ef90eed.css integrity="sha512-tKIbXT6x0KUSl+MSMKZfwl44eEPkXsOi2Rds2NFjwhbZm5sTphiyj1N8O1WeyKQIGDsPv61I2t25vvp9PvkO7Q=="></head><body data-theme=auto data-theme-auto=false><script data-cfasync=false>var fujiThemeData=localStorage.getItem("fuji_data-theme");fujiThemeData?fujiThemeData!=="auto"&&document.body.setAttribute("data-theme",fujiThemeData==="dark"?"dark":"light"):localStorage.setItem("fuji_data-theme","auto")</script><header><div class="container-lg clearfix"><div class="col-12 header"><a class=title-main href=https://kazma233.github.io>Kazma's Blog</a>
+<span class=title-sub>code and life</span></div></div></header><main><div class="container-lg clearfix"><div class="col-12 col-md-9 float-left content"><article><h2 class="post-item post-title"><a href=https://kazma233.github.io/posts/2019-05/git-merge%E6%93%8D%E4%BD%9C/>git merge操作(rebase)</a></h2><div class="post-item post-meta"><span><i class="iconfont icon-today-sharp"></i>&nbsp;2019-05-16</span>
+<span><i class="iconfont icon-file-tray-sharp"></i>&nbsp;1008 字</span>
+<span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href=/tags/%E6%95%99%E7%A8%8B>教程</a>&nbsp;<a href=/tags/git>git</a>&nbsp;</span></div><div class="post-content markdown-body"><p>用命令行一时爽，一直用命令行一直爽</p><h2 id=git的merge操作>git的merge操作</h2><p>前情提要：这里假设要把feature/BACKEND-136合并到RELEASE/1.1上</p><ol><li><p>切换到要合并到的分支上，使用<code>git checkout RELEASE/1.1</code></p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-15_20-48-59.png alt=image2019-5-15_20-48-59.png></p><p>如果不记得分支名字了可以用<code>git branch -a</code>查看下分支信息</p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-15_20-49-49.png alt=2></p></li><li><p>执行一下<code>git pull</code>，保证本地该分支代码为最新的</p></li><li><p>使用<code>git merge feature/BACKEND-136</code>命令将feature/BACKEND-136合并到当前所在的分支RELEASE/1.1上</p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-15_20-53-29.png alt=image2019-5-15_20-53-29.png></p></li><li><p>然后可以用<code>git log</code>命令看一下提交记录，可以看到后面的都是feature/BACKEND-136分支上的注释(里面&lt;E8>什么的是中文乱码，所以以后提交要不都用英文吧，对windows用户友好，😓)</p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-15_20-55-42.png alt=image2019-5-15_20-55-42.png></p></li><li><p>现在我想要把这些注释都合成一行，不需要那么多注释，只想要这一个注释：<code>finish feature BACKEND-136</code>，那接下来就可以用git的<code>rebase</code>命令了</p></li><li><p>按下q退出git log的状态，我这里执行<code>git rebase -i e1ba525035be07564ca4a484a054a8edf5112774</code>，里面一大串指的是commit后面的那串编号(看别人的貌似可以缩写)，他会把这个commit之上的commit都拿到，让你后续进行操作。
+然后会看到一个vim界面类似的，按下i开始编辑，我把除了第一个的<code>pick</code>改成了<code>s</code></p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-15_21-4-8.png alt=image2019-5-15_21-4-8.png></p><pre><code class=language-txt>pick：保留该commit（缩写:p）
+reword：保留该commit，但我需要修改该commit的注释（缩写:r）
+edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e）
+squash：将该commit和前一个commit合并（缩写:s）
+fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f）
+exec：执行shell命令（缩写:x）
+drop：我要丢弃该commit（缩写:d）
+</code></pre><p>大概意思是把s标注的都往前合并，最后就只留下第一个commit了。然后按下esc，输入:wq回车出来</p></li><li><p>这时会来到另一个页面(也是vim样界面)，写上这个commit的注释就好了，把其他的通通删掉</p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-16_19-36-21.png alt=image2019-5-16_19-36-21.png></p><p>改成了这样:</p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-16_19-37-12.png alt=image2019-5-16_19-37-12.png></p><p>把注释改完之后，同样的方式：esc，输入:wq回车退出</p></li><li><p>再次执行<code>git log</code>看看，发现你之前的记录都消失了，只留下了最后你输入的哪个commit</p><p><img class=img-zoomable src=https://raw.githubusercontent.com/kazma233/static/master/2021/06/30/image2019-5-15_21-13-8.png alt=image2019-5-15_21-13-8.png></p></li><li><p>最后万事大吉直接<code>git push</code>就好了，希望不要出意外，少女祈祷中。就完事了。</p></li></ol><h2 id=来源>来源</h2><p>一些来源参考: https://www.jianshu.com/p/4a8f4af4e803</p></div></article><div class="license markdown-body"><blockquote><p>除特殊注明部分，本站内容采用 <a rel=license href=http://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a> 进行许可。</p></blockquote></div></div><aside class="col-12 col-md-3 float-left sidebar"><div class="sidebar-item sidebar-pages"><h3>页面</h3><ul><li><a href=/>Home</a></li><li><a href=/archives/>Archives</a></li><li><a href=/about/>About</a></li><li><a href=/search/>Search</a></li><li><a href=/index.xml>RSS</a></li></ul></div><div class="sidebar-item sidebar-links"><h3>链接</h3><ul><li><a href=https://github.com/kazma233 target=_blank><span>GitHub</span></a></li></ul></div><div class="sidebar-item sidebar-tags"><h3>标签</h3><div><span><a href=/tags/ai/>AI</a></span>
+<span><a href=/tags/aigc/>AIGC</a></span>
+<span><a href=/tags/android/>Android</a></span>
+<span><a href=/tags/article/>article</a></span>
+<span><a href=/tags/consul/>consul</a></span>
+<span><a href=/tags/frp/>frp</a></span>
+<span><a href=/tags/git/>git</a></span>
+<span><a href=/tags/jaeger/>jaeger</a></span>
+<span><a href=/tags/jenkins/>Jenkins</a></span>
+<span><a href=/tags/newsletter/>newsletter</a></span>
+<span><a href=/tags/rdp/>RDP</a></span>
+<span><a href=/tags/scoop/>scoop</a></span>
+<span><a href=/tags/shadowsocks/>shadowsocks</a></span>
+<span><a href=/tags/springcloud-gateway/>SpringCloud-Gateway</a></span>
+<span><a href=/tags/string/>String</a></span>
+<span><a href=/tags/t%E5%9E%8B%E4%BA%BA%E6%89%8D/>T型人才</a></span>
+<span><a href=/tags/ubuntu/>Ubuntu</a></span>
+<span><a href=/tags/v2ray/>V2Ray</a></span>
+<span><a href=/tags/wall/>wall</a></span>
+<span><a href=/tags/xxl-job/>xxl-job</a></span>
+<span><a href=/tags/%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%9F%A9%E9%98%B5/>不确定性矩阵</a></span>
+<span><a href=/tags/%E4%BA%BA%E5%B7%A5%E5%9F%B9%E8%82%B2%E9%92%BB%E7%9F%B3/>人工培育钻石</a></span>
+<span><a href=/tags/%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96/>信息获取</a></span>
+<span><a href=/tags/%E5%80%A6%E6%80%A0%E7%A4%BE%E4%BC%9A/>倦怠社会</a></span>
+<span><a href=/tags/%E5%85%B3%E4%BA%8E%E5%AF%86%E7%A0%81/>关于密码</a></span>
+<span><a href=/tags/%E5%86%99%E4%BD%9C/>写作</a></span>
+<span><a href=/tags/%E5%88%9B%E4%B8%9A/>创业</a></span>
+<span><a href=/tags/%E5%A4%B1%E4%B8%9A/>失业</a></span>
+<span><a href=/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/>年度总结</a></span>
+<span><a href=/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/>并发工具</a></span>
+<span><a href=/tags/%E6%8B%96%E5%BB%B6%E7%97%87/>拖延症</a></span>
+<span><a href=/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/>搜索引擎</a></span>
+<span><a href=/tags/%E6%91%84%E5%BD%B1/>摄影</a></span>
+<span><a href=/tags/%E6%95%99%E7%A8%8B/>教程</a></span>
+<span><a href=/tags/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/>数字经济</a></span>
+<span><a href=/tags/%E6%95%B0%E7%A0%81%E4%BA%A7%E5%93%81%E5%8F%91%E5%B8%83%E5%91%A8/>数码产品发布周</a></span>
+<span><a href=/tags/%E6%97%A0%E6%83%B3%E6%B3%95/>无想法</a></span>
+<span><a href=/tags/%E6%B8%B8%E8%A1%8C/>游行</a></span>
+<span><a href=/tags/%E6%BA%90%E7%A0%81/>源码</a></span>
+<span><a href=/tags/%E7%AC%94%E8%AE%B0/>笔记</a></span>
+<span><a href=/tags/%E7%B3%BB%E7%BB%9F/>系统</a></span>
+<span><a href=/tags/%E7%BD%91%E7%BB%9C%E6%9A%B4%E5%8A%9B/>网络暴力</a></span>
+<span><a href=/tags/%E8%A7%84%E5%88%92/>规划</a></span>
+<span><a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB/>阅读</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB%E8%BE%93%E5%85%A5/>阅读输入</a></span>
+<span><a href=/tags/%E9%AB%98%E6%B8%A9/>高温</a></span></div></div><div class="sidebar-item sidebar-toc"><h3>目录</h3><nav id=TableOfContents><ul><li><a href=#git的merge操作>git的merge操作</a></li><li><a href=#来源>来源</a></li></ul></nav></div></aside></div><div class=btn><div class=btn-menu id=btn-menu><i class="iconfont icon-grid-sharp"></i></div><div class=btn-toggle-mode><i class="iconfont icon-contrast-sharp"></i></div><div class=btn-scroll-top><i class="iconfont icon-chevron-up-circle-sharp"></i></div></div><aside class=sidebar-mobile style=display:none><div class=sidebar-wrapper><div class="sidebar-item sidebar-pages"><h3>页面</h3><ul><li><a href=/>Home</a></li><li><a href=/archives/>Archives</a></li><li><a href=/about/>About</a></li><li><a href=/search/>Search</a></li><li><a href=/index.xml>RSS</a></li></ul></div><div class="sidebar-item sidebar-links"><h3>链接</h3><ul><li><a href=https://github.com/kazma233 target=_blank><span>GitHub</span></a></li></ul></div><div class="sidebar-item sidebar-tags"><h3>标签</h3><div><span><a href=/tags/ai/>AI</a></span>
+<span><a href=/tags/aigc/>AIGC</a></span>
+<span><a href=/tags/android/>Android</a></span>
+<span><a href=/tags/article/>article</a></span>
+<span><a href=/tags/consul/>consul</a></span>
+<span><a href=/tags/frp/>frp</a></span>
+<span><a href=/tags/git/>git</a></span>
+<span><a href=/tags/jaeger/>jaeger</a></span>
+<span><a href=/tags/jenkins/>Jenkins</a></span>
+<span><a href=/tags/newsletter/>newsletter</a></span>
+<span><a href=/tags/rdp/>RDP</a></span>
+<span><a href=/tags/scoop/>scoop</a></span>
+<span><a href=/tags/shadowsocks/>shadowsocks</a></span>
+<span><a href=/tags/springcloud-gateway/>SpringCloud-Gateway</a></span>
+<span><a href=/tags/string/>String</a></span>
+<span><a href=/tags/t%E5%9E%8B%E4%BA%BA%E6%89%8D/>T型人才</a></span>
+<span><a href=/tags/ubuntu/>Ubuntu</a></span>
+<span><a href=/tags/v2ray/>V2Ray</a></span>
+<span><a href=/tags/wall/>wall</a></span>
+<span><a href=/tags/xxl-job/>xxl-job</a></span>
+<span><a href=/tags/%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%9F%A9%E9%98%B5/>不确定性矩阵</a></span>
+<span><a href=/tags/%E4%BA%BA%E5%B7%A5%E5%9F%B9%E8%82%B2%E9%92%BB%E7%9F%B3/>人工培育钻石</a></span>
+<span><a href=/tags/%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96/>信息获取</a></span>
+<span><a href=/tags/%E5%80%A6%E6%80%A0%E7%A4%BE%E4%BC%9A/>倦怠社会</a></span>
+<span><a href=/tags/%E5%85%B3%E4%BA%8E%E5%AF%86%E7%A0%81/>关于密码</a></span>
+<span><a href=/tags/%E5%86%99%E4%BD%9C/>写作</a></span>
+<span><a href=/tags/%E5%88%9B%E4%B8%9A/>创业</a></span>
+<span><a href=/tags/%E5%A4%B1%E4%B8%9A/>失业</a></span>
+<span><a href=/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/>年度总结</a></span>
+<span><a href=/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/>并发工具</a></span>
+<span><a href=/tags/%E6%8B%96%E5%BB%B6%E7%97%87/>拖延症</a></span>
+<span><a href=/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/>搜索引擎</a></span>
+<span><a href=/tags/%E6%91%84%E5%BD%B1/>摄影</a></span>
+<span><a href=/tags/%E6%95%99%E7%A8%8B/>教程</a></span>
+<span><a href=/tags/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/>数字经济</a></span>
+<span><a href=/tags/%E6%95%B0%E7%A0%81%E4%BA%A7%E5%93%81%E5%8F%91%E5%B8%83%E5%91%A8/>数码产品发布周</a></span>
+<span><a href=/tags/%E6%97%A0%E6%83%B3%E6%B3%95/>无想法</a></span>
+<span><a href=/tags/%E6%B8%B8%E8%A1%8C/>游行</a></span>
+<span><a href=/tags/%E6%BA%90%E7%A0%81/>源码</a></span>
+<span><a href=/tags/%E7%AC%94%E8%AE%B0/>笔记</a></span>
+<span><a href=/tags/%E7%B3%BB%E7%BB%9F/>系统</a></span>
+<span><a href=/tags/%E7%BD%91%E7%BB%9C%E6%9A%B4%E5%8A%9B/>网络暴力</a></span>
+<span><a href=/tags/%E8%A7%84%E5%88%92/>规划</a></span>
+<span><a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB/>阅读</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB%E8%BE%93%E5%85%A5/>阅读输入</a></span>
+<span><a href=/tags/%E9%AB%98%E6%B8%A9/>高温</a></span></div></div><div class="sidebar-item sidebar-toc"><h3>目录</h3><nav id=TableOfContents><ul><li><a href=#git的merge操作>git的merge操作</a></li><li><a href=#来源>来源</a></li></ul></nav></div></div></aside></main><footer><div class="container-lg clearfix"><div class="col-12 footer"><span>&copy; 2023
+<a href=https://kazma233.github.io>Kazma</a>
+| 基于 <a href=https://github.com/dsrkafuu/hugo-theme-fuji/ target=_blank>Fuji-v2</a> & <a href=https://gohugo.io/ target=_blank>Hugo</a> 构建</span></div></div></footer><script defer src=https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js integrity="sha512-N9IJRoc3LaP3NDoiGkcPa4gG94kapGpaA5Zq9/Dr04uf5TbLFU5q0o8AbRhLKUUlp8QFS2u7S+Yti0U7QtuZvQ==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js integrity="sha512-q583ppKrCRc7N5O0n2nzUiJ+suUv7Et1JGels4bXOaMFQcamPk9HjdUknZuuFjBNs7tsMuadge5k9RzdmO+1GQ==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/prismjs@1.27.0/components/prism-core.min.js integrity="sha512-LCKPTo0gtJ74zCNMbWw04ltmujpzSR4oW+fgN+Y1YclhM5ZrHCZQAJE4quEodcI/G122sRhSGU2BsSRUZ2Gu3w==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/prismjs@1.27.0/plugins/autoloader/prism-autoloader.min.js integrity="sha512-GP4x8UWxWyh4BMbyJGOGneiTbkrWEF5izsVJByzVLodP8CuJH/n936+yQDMJJrOPUHLgyPbLiGw2rXmdvGdXHA==" crossorigin=anonymous></script>
+<script defer src=/assets/js/fuji.min.645f1123be695831f419ab54c1bcba327325895c740014006e57070d4f3e5d6b553e929c4b46f40ea707249e9c7f7c2a446d32a39ce7319f80a34525586a8e0f.js integrity="sha512-ZF8RI75pWDH0GatUwby6MnMliVx0ABQAblcHDU8+XWtVPpKcS0b0DqcHJJ6cf3wqRG0yo5znMZ+Ao0UlWGqODw=="></script></body></html>

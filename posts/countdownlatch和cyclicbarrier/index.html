@@ -1,0 +1,271 @@
+<!doctype html><html lang=zh-hans><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=HandheldFriendly content="True"><meta http-equiv=x-ua-compatible content="IE=edge"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=generator content="Hugo 0.107.0"><link rel="shortcut icon" href=https://cdn.jsdelivr.net/gh/dsrkafuu/dsr-cdn-main@1/images/favicons/dsrca.ico><title>CountDownLatch和CyclicBarrier - Kazma's Blog</title><meta name=author content="Kazma"><meta name=description content="CountDownLatch和CyclicBarrier"><meta name=keywords content="教程,并发工具"><meta property="og:title" content="CountDownLatch和CyclicBarrier"><meta name=twitter:title content="CountDownLatch和CyclicBarrier"><meta property="og:type" content="article"><meta property="og:url" content="https://kazma233.github.io/posts/countdownlatch%E5%92%8Ccyclicbarrier/"><meta property="og:description" content="CountDownLatch和CyclicBarrier"><meta name=twitter:description content="CountDownLatch和CyclicBarrier"><meta name=twitter:card content="summary"><meta property="article:published_time" content="2018-09-03T11:17:17+08:00"><meta property="article:modified_time" content="2018-09-03T11:17:17+08:00"><style>@media(prefers-color-scheme:dark){body[data-theme=auto] img{filter:brightness(60%)}}body[data-theme=dark] img{filter:brightness(60%)}</style><link rel=stylesheet href=https://kazma233.github.io/assets/css/fuji.min.b4a21b5d3eb1d0a51297e31230a65fc25e387843e45ec3a2d9176cd8d163c216d99b9b13a618b28f537c3b559ec8a408183b0fbfad48daddb9befa7d3ef90eed.css integrity="sha512-tKIbXT6x0KUSl+MSMKZfwl44eEPkXsOi2Rds2NFjwhbZm5sTphiyj1N8O1WeyKQIGDsPv61I2t25vvp9PvkO7Q=="></head><body data-theme=auto data-theme-auto=false><script data-cfasync=false>var fujiThemeData=localStorage.getItem("fuji_data-theme");fujiThemeData?fujiThemeData!=="auto"&&document.body.setAttribute("data-theme",fujiThemeData==="dark"?"dark":"light"):localStorage.setItem("fuji_data-theme","auto")</script><header><div class="container-lg clearfix"><div class="col-12 header"><a class=title-main href=https://kazma233.github.io>Kazma's Blog</a>
+<span class=title-sub>code and life</span></div></div></header><main><div class="container-lg clearfix"><div class="col-12 col-md-9 float-left content"><article><h2 class="post-item post-title"><a href=https://kazma233.github.io/posts/countdownlatch%E5%92%8Ccyclicbarrier/>CountDownLatch和CyclicBarrier</a></h2><div class="post-item post-meta"><span><i class="iconfont icon-today-sharp"></i>&nbsp;2018-09-03</span>
+<span><i class="iconfont icon-file-tray-sharp"></i>&nbsp;2081 字</span>
+<span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href=/tags/%E6%95%99%E7%A8%8B>教程</a>&nbsp;<a href=/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7>并发工具</a>&nbsp;</span></div><div class="post-content markdown-body"><h1 id=countdownlatch和cyclicbarrier>CountDownLatch和CyclicBarrier</h1><p>这两个java并发的工具类还是很常用的，还有一个Semaphore(信号量)，看看他们分别是怎样使用的。</p><p>我第一次看到这三个工具类也是在<a href=https://book.douban.com/subject/10484692/ target=_blank>Java并发编程实战</a>上看到的，写下笔记增加点印象。</p><h2 id=countdownlatch>CountDownLatch</h2><p>首先来看CountDownLatch，有人是这样比喻的:</p><blockquote><p>百米赛跑，十名运动员同时起跑，由于速度的快慢，肯定有先到达和后到达的，而终点有个统计成绩的仪器，当所有选手到达终点时，它会统计所有人的成绩并进行排序，然后把结果发送到汇报成绩的系统。
+<a href=https://blog.csdn.net/itmyhome1990/article/details/74971388 target=_blank>来源</a></p></blockquote><p>CountDownLatch来源于jdk<code>@since 1.5</code>，他的作用就像刚才描述的例子那样，把运动员看成是不同的线程，主线程(统计的人)需要等待<code>await()</code>其他线程(运动员)都执行执行到终点<code>countDown()</code>，才进行后续的操作，比如: 成绩排序，发送汇总结果等等。</p><p>来看看CountDownLatch的API</p><ul><li><p>构造函数</p><pre><code class=language-java>public CountDownLatch(int count) {  };  //参数count为计数值
+</code></pre></li><li><p>方法</p><pre><code class=language-java>public void await() throws InterruptedException { };   //调用await()方法的线程会被挂起，它会等待直到count值为0才继续执行
+public boolean await(long timeout, TimeUnit unit) throws InterruptedException { };  //和await()类似，只不过等待一定的时间后count值还没变为0的话就会继续执行
+public void countDown() { };  //将count值减1
+</code></pre></li><li><p>下面是我参考写出来的例子(使用junit4):</p><pre><code class=language-java>public class CountDownLatchTest {
+
+    private static final Integer THREAD_COUNT = 2;
+
+    @Test
+    public void main() throws InterruptedException {
+
+        CountDownLatch countDownLatch = new CountDownLatch(THREAD_COUNT);
+
+        for (int i = 1; i &lt;= THREAD_COUNT; i++) {
+            new Thread(new MyRunable(i + &quot;&quot;, i * 1000L, countDownLatch)).start()   ;
+        }
+
+        countDownLatch.await();
+        System.out.println(&quot;All Over&quot;);
+    }
+
+    public class MyRunable implements Runnable {
+
+        private String name;
+        private Long time;
+        private CountDownLatch countDownLatch;
+
+        public MyRunable(String name, Long time, CountDownLatch countDownLatch)    {
+            this.name = name;
+            this.countDownLatch = countDownLatch;
+            this.time = time;
+        }
+
+        @Override
+        public void run() {
+            System.out.println(name + &quot;: run&quot;);
+            try {
+                Thread.sleep(time);
+                System.out.println(name + &quot;: over&quot;);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                countDownLatch.countDown();
+            }
+        }
+    }
+}
+</code></pre></li></ul><h2 id=cyclicbarrier>CyclicBarrier</h2><p>CyclicBarrier，也是在<code>@since 1.5</code>加入的并发控制工具类，它可以让线程进行互相等待<code>await()</code>，当一个线程先执行完某些任务时，他会被阻塞(Barrier)，直到所有线程都执行到这个状态时，这些线程才能继续往后执行其他任务。CycliBarrier对象可以重复使用，重用之前应当调用<code>reset()</code>。</p><ul><li><p>它有两个构造函数</p><pre><code class=language-java>// parties表示要多少个线程需要等待
+// barrierAction为当这些线程都达到barrier状态时将会执行
+public CyclicBarrier(int parties, Runnable barrierAction);
+public CyclicBarrier(int parties);
+</code></pre></li><li><p>主要API</p><pre><code class=language-java>// 等待其他线程 应该是最常用的方法了
+public int await()
+public int await(long timeout, TimeUnit unit)
+// 重置CyclicBarrier
+public void reset()
+// 获得CyclicBarrier阻塞的线程数量
+public int getNumberWaiting()
+// 用来知道阻塞的线程是否被中断
+public boolean isBroken()
+</code></pre></li><li><p>下面看一个实例(同样用junit4测试):</p><pre><code class=language-java>public class CyclicBarrierTest {
+
+    private static final Integer THREAD_COUNT = 2;
+
+    @Test
+    public void main() throws IOException {
+
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(THREAD_COUNT, new    Runnable() {
+            @Override
+            public void run() {
+                System.out.println(&quot;over&quot;);
+            }
+        });
+
+        for (int i = 0; i &lt; THREAD_COUNT; i++) {
+            new Thread(new WriteRunable(i + &quot;&quot;, cyclicBarrier)).start();
+        }
+
+        System.in.read();
+    }
+
+    public class WriteRunable implements Runnable {
+
+        private String name;
+        private CyclicBarrier cyclicBarrier;
+
+        public WriteRunable(String name, CyclicBarrier cyclicBarrier) {
+            this.name = name;
+            this.cyclicBarrier = cyclicBarrier;
+        }
+
+        @Override
+        public void run() {
+            try {
+                double v = Math.random() * 10000d;
+                System.out.println(v);
+                Thread.sleep((long) v);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    System.out.println(&quot;任务完成: &quot; + name);
+                    cyclicBarrier.await(); // 等待其他线程完成后再继续执行
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            System.out.println(&quot;继续后续任务&quot;);
+        }
+    }
+}
+</code></pre></li></ul><h2 id=semaphore>Semaphore</h2><p>Semaphore翻译成字面意思为 信号量，Semaphore可以控制同时访问的线程个数，通过 acquire() 获取一个许可，如果没有就等待，而 release() 释放一个许可。</p><ul><li><p>构造函数</p><pre><code class=language-java>// 参数permits表示许可数目，即同时可以允许多少线程进行访问
+public Semaphore(int permits) {  
+    sync = new NonfairSync(permits);
+}
+// 这个多了一个参数fair表示是否是公平的，即等待时间越久的越先获取许可
+public Semaphore(int permits, boolean fair) {
+    sync = (fair)? new FairSync(permits) : new NonfairSync(permits);
+}
+</code></pre></li><li><p>重要的方法</p><pre><code class=language-java>// 获取一个许可
+public void acquire()
+// 获取permits个许可
+public void acquire(int permits)
+// 释放一个许可  
+public void release()
+// 释放permits个许可
+public void release(int permits)
+// 尝试获取一个许可，若获取成功，则立即返回true，若获取失败，则立即返回false
+public boolean tryAcquire()
+// 尝试获取一个许可，若在指定的时间内获取成功，则立即返回true，否则则立即返回false
+public boolean tryAcquire(long timeout, TimeUnit unit)
+// 尝试获取permits个许可，若获取成功，则立即返回true，若获取失败，则立即返回false
+public boolean tryAcquire(int permits)
+// 尝试获取permits个许可，若在指定的时间内获取成功，则立即返回true，否则则立即返回false
+public boolean tryAcquire(int permits, long timeout, TimeUnit unit)
+// Returns the current number of permits available in this semaphore.
+public int availablePermits()
+</code></pre></li></ul><p>假若一个工厂有5台机器，但是有8个工人，一台机器同时只能被一个工人使用，只有使用完了，其他工人才能继续使用。那么我们就可以通过Semaphore来实现</p><pre><code class=language-java>public class Test {
+    public static void main(String[] args) {
+        int N = 8;            //工人数
+        Semaphore semaphore = new Semaphore(5); //机器数目
+        for(int i=0;i&lt;N;i++)
+            new Worker(i,semaphore).start();
+    }
+
+    static class Worker extends Thread{
+        private int num;
+        private Semaphore semaphore;
+        public Worker(int num,Semaphore semaphore){
+            this.num = num;
+            this.semaphore = semaphore;
+        }
+
+        @Override
+        public void run() {
+            try {
+                semaphore.acquire();
+                System.out.println(&quot;工人&quot;+this.num+&quot;占用一个机器在生产...&quot;);
+                Thread.sleep(2000);
+                System.out.println(&quot;工人&quot;+this.num+&quot;释放出机器&quot;);
+                semaphore.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+</code></pre><p>文中Semaphore用法全来源于引用1.</p><p>引用:</p><ol><li><a href=https://www.cnblogs.com/dolphin0520/p/3920397.html target=_blank>Java并发编程：CountDownLatch、CyclicBarrier和Semaphore</a></li><li><a href=https://www.cnblogs.com/nullzx/p/5271964.html target=_blank>Java并发包中CyclicBarrier的工作原理、使用示例</a></li><li><a href=http://ifeve.com/concurrency-cyclicbarrier/ target=_blank>并发工具类（二）同步屏障CyclicBarrier</a></li></ol></div></article><div class="license markdown-body"><blockquote><p>除特殊注明部分，本站内容采用 <a rel=license href=http://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a> 进行许可。</p></blockquote></div></div><aside class="col-12 col-md-3 float-left sidebar"><div class="sidebar-item sidebar-pages"><h3>页面</h3><ul><li><a href=/>Home</a></li><li><a href=/archives/>Archives</a></li><li><a href=/about/>About</a></li><li><a href=/search/>Search</a></li><li><a href=/index.xml>RSS</a></li></ul></div><div class="sidebar-item sidebar-links"><h3>链接</h3><ul><li><a href=https://github.com/kazma233 target=_blank><span>GitHub</span></a></li></ul></div><div class="sidebar-item sidebar-tags"><h3>标签</h3><div><span><a href=/tags/ai/>AI</a></span>
+<span><a href=/tags/aigc/>AIGC</a></span>
+<span><a href=/tags/android/>Android</a></span>
+<span><a href=/tags/article/>article</a></span>
+<span><a href=/tags/consul/>consul</a></span>
+<span><a href=/tags/frp/>frp</a></span>
+<span><a href=/tags/git/>git</a></span>
+<span><a href=/tags/jaeger/>jaeger</a></span>
+<span><a href=/tags/jenkins/>Jenkins</a></span>
+<span><a href=/tags/newsletter/>newsletter</a></span>
+<span><a href=/tags/rdp/>RDP</a></span>
+<span><a href=/tags/scoop/>scoop</a></span>
+<span><a href=/tags/shadowsocks/>shadowsocks</a></span>
+<span><a href=/tags/springcloud-gateway/>SpringCloud-Gateway</a></span>
+<span><a href=/tags/string/>String</a></span>
+<span><a href=/tags/t%E5%9E%8B%E4%BA%BA%E6%89%8D/>T型人才</a></span>
+<span><a href=/tags/ubuntu/>Ubuntu</a></span>
+<span><a href=/tags/v2ray/>V2Ray</a></span>
+<span><a href=/tags/wall/>wall</a></span>
+<span><a href=/tags/xxl-job/>xxl-job</a></span>
+<span><a href=/tags/%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%9F%A9%E9%98%B5/>不确定性矩阵</a></span>
+<span><a href=/tags/%E4%BA%BA%E5%B7%A5%E5%9F%B9%E8%82%B2%E9%92%BB%E7%9F%B3/>人工培育钻石</a></span>
+<span><a href=/tags/%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96/>信息获取</a></span>
+<span><a href=/tags/%E5%80%A6%E6%80%A0%E7%A4%BE%E4%BC%9A/>倦怠社会</a></span>
+<span><a href=/tags/%E5%85%B3%E4%BA%8E%E5%AF%86%E7%A0%81/>关于密码</a></span>
+<span><a href=/tags/%E5%86%99%E4%BD%9C/>写作</a></span>
+<span><a href=/tags/%E5%88%9B%E4%B8%9A/>创业</a></span>
+<span><a href=/tags/%E5%A4%B1%E4%B8%9A/>失业</a></span>
+<span><a href=/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/>年度总结</a></span>
+<span><a href=/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/>并发工具</a></span>
+<span><a href=/tags/%E6%8B%96%E5%BB%B6%E7%97%87/>拖延症</a></span>
+<span><a href=/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/>搜索引擎</a></span>
+<span><a href=/tags/%E6%91%84%E5%BD%B1/>摄影</a></span>
+<span><a href=/tags/%E6%95%99%E7%A8%8B/>教程</a></span>
+<span><a href=/tags/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/>数字经济</a></span>
+<span><a href=/tags/%E6%95%B0%E7%A0%81%E4%BA%A7%E5%93%81%E5%8F%91%E5%B8%83%E5%91%A8/>数码产品发布周</a></span>
+<span><a href=/tags/%E6%97%A0%E6%83%B3%E6%B3%95/>无想法</a></span>
+<span><a href=/tags/%E6%B8%B8%E8%A1%8C/>游行</a></span>
+<span><a href=/tags/%E6%BA%90%E7%A0%81/>源码</a></span>
+<span><a href=/tags/%E7%AC%94%E8%AE%B0/>笔记</a></span>
+<span><a href=/tags/%E7%B3%BB%E7%BB%9F/>系统</a></span>
+<span><a href=/tags/%E7%BD%91%E7%BB%9C%E6%9A%B4%E5%8A%9B/>网络暴力</a></span>
+<span><a href=/tags/%E8%A7%84%E5%88%92/>规划</a></span>
+<span><a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB/>阅读</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB%E8%BE%93%E5%85%A5/>阅读输入</a></span>
+<span><a href=/tags/%E9%AB%98%E6%B8%A9/>高温</a></span></div></div><div class="sidebar-item sidebar-toc"><h3>目录</h3><nav id=TableOfContents><ul><li><a href=#countdownlatch>CountDownLatch</a></li><li><a href=#cyclicbarrier>CyclicBarrier</a></li><li><a href=#semaphore>Semaphore</a></li></ul></nav></div></aside></div><div class=btn><div class=btn-menu id=btn-menu><i class="iconfont icon-grid-sharp"></i></div><div class=btn-toggle-mode><i class="iconfont icon-contrast-sharp"></i></div><div class=btn-scroll-top><i class="iconfont icon-chevron-up-circle-sharp"></i></div></div><aside class=sidebar-mobile style=display:none><div class=sidebar-wrapper><div class="sidebar-item sidebar-pages"><h3>页面</h3><ul><li><a href=/>Home</a></li><li><a href=/archives/>Archives</a></li><li><a href=/about/>About</a></li><li><a href=/search/>Search</a></li><li><a href=/index.xml>RSS</a></li></ul></div><div class="sidebar-item sidebar-links"><h3>链接</h3><ul><li><a href=https://github.com/kazma233 target=_blank><span>GitHub</span></a></li></ul></div><div class="sidebar-item sidebar-tags"><h3>标签</h3><div><span><a href=/tags/ai/>AI</a></span>
+<span><a href=/tags/aigc/>AIGC</a></span>
+<span><a href=/tags/android/>Android</a></span>
+<span><a href=/tags/article/>article</a></span>
+<span><a href=/tags/consul/>consul</a></span>
+<span><a href=/tags/frp/>frp</a></span>
+<span><a href=/tags/git/>git</a></span>
+<span><a href=/tags/jaeger/>jaeger</a></span>
+<span><a href=/tags/jenkins/>Jenkins</a></span>
+<span><a href=/tags/newsletter/>newsletter</a></span>
+<span><a href=/tags/rdp/>RDP</a></span>
+<span><a href=/tags/scoop/>scoop</a></span>
+<span><a href=/tags/shadowsocks/>shadowsocks</a></span>
+<span><a href=/tags/springcloud-gateway/>SpringCloud-Gateway</a></span>
+<span><a href=/tags/string/>String</a></span>
+<span><a href=/tags/t%E5%9E%8B%E4%BA%BA%E6%89%8D/>T型人才</a></span>
+<span><a href=/tags/ubuntu/>Ubuntu</a></span>
+<span><a href=/tags/v2ray/>V2Ray</a></span>
+<span><a href=/tags/wall/>wall</a></span>
+<span><a href=/tags/xxl-job/>xxl-job</a></span>
+<span><a href=/tags/%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%80%A7%E7%9F%A9%E9%98%B5/>不确定性矩阵</a></span>
+<span><a href=/tags/%E4%BA%BA%E5%B7%A5%E5%9F%B9%E8%82%B2%E9%92%BB%E7%9F%B3/>人工培育钻石</a></span>
+<span><a href=/tags/%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96/>信息获取</a></span>
+<span><a href=/tags/%E5%80%A6%E6%80%A0%E7%A4%BE%E4%BC%9A/>倦怠社会</a></span>
+<span><a href=/tags/%E5%85%B3%E4%BA%8E%E5%AF%86%E7%A0%81/>关于密码</a></span>
+<span><a href=/tags/%E5%86%99%E4%BD%9C/>写作</a></span>
+<span><a href=/tags/%E5%88%9B%E4%B8%9A/>创业</a></span>
+<span><a href=/tags/%E5%A4%B1%E4%B8%9A/>失业</a></span>
+<span><a href=/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/>年度总结</a></span>
+<span><a href=/tags/%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7/>并发工具</a></span>
+<span><a href=/tags/%E6%8B%96%E5%BB%B6%E7%97%87/>拖延症</a></span>
+<span><a href=/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/>搜索引擎</a></span>
+<span><a href=/tags/%E6%91%84%E5%BD%B1/>摄影</a></span>
+<span><a href=/tags/%E6%95%99%E7%A8%8B/>教程</a></span>
+<span><a href=/tags/%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E/>数字经济</a></span>
+<span><a href=/tags/%E6%95%B0%E7%A0%81%E4%BA%A7%E5%93%81%E5%8F%91%E5%B8%83%E5%91%A8/>数码产品发布周</a></span>
+<span><a href=/tags/%E6%97%A0%E6%83%B3%E6%B3%95/>无想法</a></span>
+<span><a href=/tags/%E6%B8%B8%E8%A1%8C/>游行</a></span>
+<span><a href=/tags/%E6%BA%90%E7%A0%81/>源码</a></span>
+<span><a href=/tags/%E7%AC%94%E8%AE%B0/>笔记</a></span>
+<span><a href=/tags/%E7%B3%BB%E7%BB%9F/>系统</a></span>
+<span><a href=/tags/%E7%BD%91%E7%BB%9C%E6%9A%B4%E5%8A%9B/>网络暴力</a></span>
+<span><a href=/tags/%E8%A7%84%E5%88%92/>规划</a></span>
+<span><a href=/tags/%E8%BF%90%E7%BB%B4/>运维</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB/>阅读</a></span>
+<span><a href=/tags/%E9%98%85%E8%AF%BB%E8%BE%93%E5%85%A5/>阅读输入</a></span>
+<span><a href=/tags/%E9%AB%98%E6%B8%A9/>高温</a></span></div></div><div class="sidebar-item sidebar-toc"><h3>目录</h3><nav id=TableOfContents><ul><li><a href=#countdownlatch>CountDownLatch</a></li><li><a href=#cyclicbarrier>CyclicBarrier</a></li><li><a href=#semaphore>Semaphore</a></li></ul></nav></div></div></aside></main><footer><div class="container-lg clearfix"><div class="col-12 footer"><span>&copy; 2023
+<a href=https://kazma233.github.io>Kazma</a>
+| 基于 <a href=https://github.com/dsrkafuu/hugo-theme-fuji/ target=_blank>Fuji-v2</a> & <a href=https://gohugo.io/ target=_blank>Hugo</a> 构建</span></div></div></footer><script defer src=https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js integrity="sha512-N9IJRoc3LaP3NDoiGkcPa4gG94kapGpaA5Zq9/Dr04uf5TbLFU5q0o8AbRhLKUUlp8QFS2u7S+Yti0U7QtuZvQ==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js integrity="sha512-q583ppKrCRc7N5O0n2nzUiJ+suUv7Et1JGels4bXOaMFQcamPk9HjdUknZuuFjBNs7tsMuadge5k9RzdmO+1GQ==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/prismjs@1.27.0/components/prism-core.min.js integrity="sha512-LCKPTo0gtJ74zCNMbWw04ltmujpzSR4oW+fgN+Y1YclhM5ZrHCZQAJE4quEodcI/G122sRhSGU2BsSRUZ2Gu3w==" crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/prismjs@1.27.0/plugins/autoloader/prism-autoloader.min.js integrity="sha512-GP4x8UWxWyh4BMbyJGOGneiTbkrWEF5izsVJByzVLodP8CuJH/n936+yQDMJJrOPUHLgyPbLiGw2rXmdvGdXHA==" crossorigin=anonymous></script>
+<script defer src=/assets/js/fuji.min.645f1123be695831f419ab54c1bcba327325895c740014006e57070d4f3e5d6b553e929c4b46f40ea707249e9c7f7c2a446d32a39ce7319f80a34525586a8e0f.js integrity="sha512-ZF8RI75pWDH0GatUwby6MnMliVx0ABQAblcHDU8+XWtVPpKcS0b0DqcHJJ6cf3wqRG0yo5znMZ+Ao0UlWGqODw=="></script></body></html>
